@@ -7,9 +7,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+//1.0
+//0.5
+//19.5
+//-3.75
+//0
 public class GUIRunner extends Application{
 	Ieee754Converter toSinglePercision;
 	Ieee754Converter toDoublePercision;
+	Ieee754Converter convert;
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -64,7 +70,7 @@ public class GUIRunner extends Application{
 				String inputDecimal = userTextField1.getText();
 				//System.out.println(inputDecimal);
 				toSinglePercision = decimalConverter(inputDecimal);
-				String output = toSinglePercision.convertBinaryToSingle().toString();
+				String output = toSinglePercision.convertBinaryToSingle(inputDecimal).toString();
 				outputSingle.setText(output);
 				System.out.println(output);
 			}
@@ -77,7 +83,7 @@ public class GUIRunner extends Application{
 				String inputDecimal = userTextField2.getText();
 				//System.out.println(inputDecimal);
 				toDoublePercision = decimalConverter(inputDecimal);
-				String output = toDoublePercision.convertBinaryToDouble().toString();
+				String output = toDoublePercision.convertBinaryToDouble(inputDecimal).toString();
 				outputDouble.setText(output);
 				System.out.println(output);
 				
@@ -119,16 +125,29 @@ public class GUIRunner extends Application{
 		primaryStage.show();
 	}
 	public Ieee754Converter decimalConverter(String decimal){
-		int periodPos = decimal.indexOf(".");
-		int numberWhole = 0;
+		int periodPos=0;
+		boolean noPeriod;
 		String sign = null;
+		int numberWhole = 0;
 		if(Double.parseDouble(decimal)>=0)
 		{
 			sign="0";
 		} else if(Double.parseDouble(decimal)<0)
 		{
 			sign="1";
+			int dashPos = decimal.indexOf('-');
+			decimal = decimal.substring(dashPos+1);
+			//System.out.println(decimal);
 		}
+		//periodPos = decimal.indexOf(".");
+		if(decimal.contains(".")){
+			periodPos = decimal.indexOf(".");
+			//System.out.println(periodPos);
+			noPeriod = false;
+		} else {
+			noPeriod = true;
+		}
+		
 		if(periodPos!=0)
 		{
 			numberWhole = Integer.parseInt(decimal.substring(0, periodPos));
@@ -136,7 +155,12 @@ public class GUIRunner extends Application{
 		{
 			numberWhole = 0;
 		}
-		double numberDecimal = Double.parseDouble(decimal.substring(periodPos));
+		double numberDecimal=0;
+		if(noPeriod==false)
+		{
+			numberDecimal = Double.parseDouble(decimal.substring(periodPos));
+		}
+		//double numberDecimal = Double.parseDouble(decimal.substring(periodPos));
 
 		//System.out.println(numberWhole+"  .  "+numberDecimal);
 		String binary = Integer.toBinaryString(numberWhole)+".";

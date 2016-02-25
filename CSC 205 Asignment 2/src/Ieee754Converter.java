@@ -11,8 +11,14 @@ public class Ieee754Converter {
 		this.signifcand = signifcand;
 		this.exponent = exponent;
 	}
-	public Ieee754Value convertBinaryToSingle(){
-		exponent += 127;
+	public Ieee754Value convertBinaryToSingle(String input){
+		if(exponent!=0||Double.parseDouble(input)>0)
+		{
+			exponent += 127;
+		} else if(Double.parseDouble(input)==0){
+			exponent = 0;
+		}
+		
 		//System.out.println(exponent);
 		binaryExponent = Integer.toString(exponent, 2);
 		//System.out.println(binaryExponent);
@@ -41,8 +47,13 @@ public class Ieee754Converter {
 		singleValue = new Ieee754Value(sign,binaryExponent,signifcand);
 		return singleValue;
 	}
-	public Ieee754Value convertBinaryToDouble(){
-		exponent += 1023;
+	public Ieee754Value convertBinaryToDouble(String input){
+		if(exponent!=0||Double.parseDouble(input)>0)
+		{
+			exponent += 1023;
+		} else if(Double.parseDouble(input)==0){
+			exponent = 0;
+		}
 		binaryExponent = Integer.toBinaryString(exponent);
 		if(binaryExponent.length()<11)
 		{
@@ -72,8 +83,16 @@ public class Ieee754Converter {
 	public double convertSingleToDecimal(Ieee754Value singleBinary)
 	{
 		int decimalExponent = (Integer.parseInt(singleBinary.getBinaryExponent(), 2)-127);
+		String tempSignifcand;
+		if(decimalExponent==-127){
+			decimalExponent=0;
+			tempSignifcand = "0."+singleBinary.getSignifcand();
+		}
+		else{
+			tempSignifcand = "1."+singleBinary.getSignifcand();
+		}
 		//System.out.println(decimalExponent);
-		String tempSignifcand = "1."+singleBinary.getSignifcand();
+		
 		int periodPos = tempSignifcand.indexOf(".");
 		char[] signifcandArray = new char[tempSignifcand.length()];
 		signifcandArray = tempSignifcand.toCharArray();
@@ -97,7 +116,8 @@ public class Ieee754Converter {
 				periodPos--;
 				decimalExponent++;
 			}
-
+		}else if (decimalExponent==0){
+			
 		}
 		String outputBinary="";
 		for(int i=0;i<tempSignifcand.length();i++)
@@ -137,7 +157,15 @@ public class Ieee754Converter {
 	public double convertDoubleToDecimal(Ieee754Value doubleBinary)
 	{
 		double decimalExponent = (Integer.parseInt(doubleBinary.getBinaryExponent(), 2)-1023);
-		String tempSignifcand = "1."+doubleBinary.getSignifcand();
+		String tempSignifcand;
+		if(decimalExponent==-1023)
+		{
+			decimalExponent=0;
+			tempSignifcand = "0."+doubleBinary.getSignifcand();
+		}else{
+			tempSignifcand = "1."+doubleBinary.getSignifcand();
+		}
+		
 		int periodPos = tempSignifcand.indexOf(".");
 		char[] signifcandArray = new char[tempSignifcand.length()];
 		signifcandArray = tempSignifcand.toCharArray();
@@ -162,6 +190,8 @@ public class Ieee754Converter {
 				decimalExponent++;
 			}
 
+		} else if(decimalExponent==0){
+			
 		}
 		String outputBinary="";
 		for(int i=0;i<tempSignifcand.length();i++)

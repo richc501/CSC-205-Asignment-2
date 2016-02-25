@@ -1,13 +1,19 @@
 import java.util.Scanner;
-
+//1.0
+//0.5
+//19.5
+//-3.75
+//0
 
 public class DecimalConverter {
 
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 		String decimal;
+		boolean noPeriod;
 		String sign = null;
 		int numberWhole = 0; 
+		int periodPos = 0;
 		System.out.println("Enter decimal Number:");
 		decimal = input.nextLine();
 		if(Double.parseDouble(decimal)>=0)
@@ -16,8 +22,17 @@ public class DecimalConverter {
 		} else if(Double.parseDouble(decimal)<0)
 		{
 			sign="1";
+			int dashPos = decimal.indexOf('-');
+			decimal = decimal.substring(dashPos+1);
 		}
-		int periodPos = decimal.indexOf(".");
+		
+		if(decimal.contains(".")){
+			periodPos = decimal.indexOf(".");
+			System.out.println(periodPos);
+			noPeriod = false;
+		} else {
+			noPeriod = true;
+		}
 		if(periodPos!=0)
 		{
 			numberWhole = Integer.parseInt(decimal.substring(0, periodPos));
@@ -25,7 +40,11 @@ public class DecimalConverter {
 		{
 			numberWhole = 0;
 		}
-		double numberDecimal = Double.parseDouble(decimal.substring(periodPos));
+		double numberDecimal = 0;
+		if(noPeriod==false){
+			numberDecimal = Double.parseDouble(decimal.substring(periodPos));
+		}
+		
 
 		System.out.println(numberWhole+"  .  "+numberDecimal);
 		String binary = Integer.toBinaryString(numberWhole)+".";
@@ -83,10 +102,10 @@ public class DecimalConverter {
 		System.out.println(exponent);
 		
 		Ieee754Converter convert = new Ieee754Converter(sign,outputBinary,exponent);
-		Ieee754Value singleBinary = convert.convertBinaryToSingle();
+		Ieee754Value singleBinary = convert.convertBinaryToSingle(decimal);
 		System.out.println(singleBinary);
 		convert = new Ieee754Converter(sign,outputBinary,exponent);
-		Ieee754Value doubleBinary = convert.convertBinaryToDouble();
+		Ieee754Value doubleBinary = convert.convertBinaryToDouble(decimal);
 		System.out.println(doubleBinary);
 		double singleToDecimal = convert.convertSingleToDecimal(singleBinary);
 		System.out.println(singleToDecimal);
